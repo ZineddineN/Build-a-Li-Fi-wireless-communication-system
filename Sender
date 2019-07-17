@@ -1,0 +1,46 @@
+/*
+   TO Select a message, replace the Variable Message1 and Message2 values to correspond to the messages you want to send.
+   The messages that can be sent are available below:
+   1: Hi!
+   2: How are you?
+   3: Li-Fi is the future.
+   4: HELP!!!
+   5: The Truth is out there.
+*/
+
+int Message1 = 4; // Defines the time for LED based on the message to be sent
+int Message2 = 2; // Defines the time for LED for the second message.
+
+int i = 0; // Setting the Duration for the LED to be on
+int j = 0;
+
+bool MessageRec = false; // Used to check if the first message is sent before the second.
+const int LED = 10; // LED Output Pin
+
+void setup() {
+  pinMode(LED, OUTPUT); // Setting the LED as an Output
+  Serial.begin(9600); // Open Serial Communications Port to recieve messages
+}
+
+void loop() {
+  if (i < Message1) {         // Sending the first message with the duration set by Message1 Variable
+    digitalWrite(LED, HIGH); // LED Output is ON
+    i++; // Increment by one and check again till duration is met.
+    delay(1010); // Inaccuracy Correction
+  }
+  else if (MessageRec == false) { // Turn Off LED
+    digitalWrite(LED, LOW); // LED Output is OFF
+    delay(1000); // Wait 1 Second before sending the next message.
+    MessageRec = true; // Confirmation that First Message is sent
+  }
+
+  if ((j < Message2) && (MessageRec == true)) {   // Sending the second message if the first was recieved
+    digitalWrite(LED, HIGH); // LED Output is ON
+    j++; // Increment by one and check again till duration is met
+    delay(1010); // Inaccuracy Correction
+  }
+  else if (MessageRec == true) { // If no more messages are being sent
+    digitalWrite(LED, LOW); // LED Output is OFF
+    exit(0); //Stop the code after both messages are sent.
+  }
+}
