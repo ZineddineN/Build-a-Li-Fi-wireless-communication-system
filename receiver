@@ -1,0 +1,47 @@
+unsigned long StartTime = millis(); // Timer to begin counting when the first light is illuminated
+unsigned long Value; // This calculates the duration of the light to relay the corresponding message
+int Message; // This sets the message to be displayed
+
+bool StartCount = false; // This initialy sets the counter to off since nothing has started.
+
+int Sens = A0;
+
+void setup() {
+  Serial.begin(9600); // Open the Serial Communication port to recieve messages
+}
+
+void loop() {
+  int sensVal = analogRead(Sens); // Read the LDR Sensor Values to know when LED is on
+  delay(1); // Stability
+
+  //Serial.println(sensVal); // For LDR Calibration
+
+  if ((StartCount == false) && (sensVal > 850)) {     // This is when counting hasn't started and LED is ON
+    StartTime = millis(); // Start the counting and save the time in milliseconds
+    StartCount = true;
+  }
+
+  if ((StartCount == true) && (sensVal < 850)) {      // This is when counting has started and LED is OFF
+    Value = millis() - StartTime; // Subtract the current time from the initial time to determine the message to be displayed
+    Message = Value / 1000; // Divide the Milliseconds to a single integer to correspond to the message.
+    StartCount = false;
+
+    Serial.print("Message: "); // Print the Message
+
+    if (Message == 1) {
+      Serial.println("Hi!"); // If the LED is on for 1 Second
+    }
+    else if (Message == 2) {
+      Serial.println("How are you?"); // If the LED is on for 2 Seconds
+    }
+    else if (Message == 3) {
+      Serial.println("Li-Fi is the future."); // If the LED is on for 3 Seconds
+    }
+    else if (Message == 4) {
+      Serial.println("HELP!!!"); // If the LED is on for 3 Seconds
+    }
+    else if (Message == 5) {
+      Serial.println("The Truth is out there."); // If the LED is on for 3 Seconds
+    }
+  }
+}
